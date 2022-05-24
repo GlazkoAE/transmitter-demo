@@ -10,18 +10,19 @@ from gui import GUI, Axes
 
 def main():
     # sudo chmod 666 /dev/ttyUSB0
-    block_length_in_bits = 2 ** 12
+    baud_rate = 256000
+    block_length_in_bits = 2 ** 16
     block_length_in_bytes = int(block_length_in_bits / 8)
     filter_coefficients = [1, 2, 3, 4, 5, 4, 3, 2, 1]
     sps = 4
 
     gui = GUI(resolution='FHD', location=(1920, 100), title='Matrix Wave - Transmit Demo')
     ax_const = Axes(gui.canvas_const_elem, xlabel='I samples', ylabel='Q samples', title='Constellation')
-    ax_psd = Axes(gui.canvas_spectrum_elem, xlabel='Frequency, KHz', ylabel='PSD, V2/Hz',
+    ax_psd = Axes(gui.canvas_spectrum_elem, xlabel='Frequency, kHz', ylabel='PSD, V2/Hz',
                   title='Power spectral density')
 
     while True:
-        with serial.Serial('/dev/ttyUSB0', 19200, timeout=1) as ser:
+        with serial.Serial('/dev/ttyUSB0', baud_rate, timeout=1) as ser:
             event, values = gui.window.read(timeout=20)
             if event == "Exit" or event == sg.WIN_CLOSED:
                 break
