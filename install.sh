@@ -11,4 +11,4 @@ fi
 
 source $BASEDIR/venv/bin/activate
 
-pip install -r requirements.txt
+$BASEDIR/venv/bin/pip install -r requirements.txt
