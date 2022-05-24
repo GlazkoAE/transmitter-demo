@@ -1,0 +1,4 @@
+PySimpleGUI~=4.60.0
+matplotlib~=3.5.2
+pyserial~=3.5
+scipy~=1.8.1
