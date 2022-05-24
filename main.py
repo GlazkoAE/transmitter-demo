@@ -1,4 +1,3 @@
-# TODO: add real-time spectrum plotting
 # TODO: move constants to arguments with argparse
 # TODO: think about transmitting data from file
 
@@ -6,7 +5,7 @@ import serial
 import PySimpleGUI as sg
 import uart
 import processing
-from gui import GUI
+from gui import GUI, Axes
 
 
 def main():
@@ -15,9 +14,11 @@ def main():
     block_length_in_bytes = int(block_length_in_bits / 8)
     filter_coefficients = [1, 2, 3, 4, 5, 4, 3, 2, 1]
     sps = 4
-    is_work = False
 
-    gui = GUI(resolution='FHD', location=(1920, 364), title='Matrix Wave - Transmit Demo')
+    gui = GUI(resolution='FHD', location=(1920, 100), title='Matrix Wave - Transmit Demo')
+    ax_const = Axes(gui.canvas_const_elem, xlabel='I samples', ylabel='Q samples', title='Constellation')
+    ax_psd = Axes(gui.canvas_spectrum_elem, xlabel='Frequency, KHz', ylabel='PSD, V2/Hz',
+                  title='Power spectral density')
 
     while True:
         with serial.Serial('/dev/ttyUSB0', 19200, timeout=1) as ser:
@@ -42,9 +43,8 @@ def main():
                 q_samples = processing.filter_signal(q_signal, filter_coefficients, sps)
 
                 # Update plots
-                gui.draw(plot_name='const', x=i_samples, y=q_samples, style='ro')
-                gui.draw(plot_name='spectrum', x=frequency, y=psd, style='b')
-                # gui.set_axes_labels()
+                ax_const.draw(x=i_samples, y=q_samples, style='ro')
+                ax_psd.draw(x=frequency, y=psd, style='b')
 
 
 if __name__ == '__main__':

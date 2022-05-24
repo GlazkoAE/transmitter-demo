@@ -31,8 +31,8 @@ class GUI:
         self.layout = self.get_layout()
         self.window = sg.Window(title, self.layout, finalize=True, size=self.size, location=location, resizable=True,
                                 font="Helvetica 38")
-        self.ax_const, self.ax_spectrum, self.fig_const_canvas, self.fig_spectrum_canvas = self.get_initial_plots()
-        self.set_axes_labels()
+        self.canvas_const_elem = self.window['constellation']
+        self.canvas_spectrum_elem = self.window['spectrum']
 
     def get_layout(self):
         # Define the window layout
@@ -61,47 +61,32 @@ class GUI:
         ]
         return layout
 
-    def get_initial_plots(self):
-        canvas_const_elem = self.window['constellation']
-        canvas_const = canvas_const_elem.TKCanvas
-        fig_const = Figure()
-        ax_const = fig_const.add_subplot(111)
-        fig_const_canvas = _draw_figure(canvas_const, fig_const)
-
-        canvas_spectrum_elem = self.window['spectrum']
-        canvas_spectrum = canvas_spectrum_elem.TKCanvas
-        fig_spectrum = Figure()
-        ax_spectrum = fig_spectrum.add_subplot(111)
-        fig_spectrum_canvas = _draw_figure(canvas_spectrum, fig_spectrum)
-
-        return ax_const, ax_spectrum, fig_const_canvas, fig_spectrum_canvas
-
-    def set_axes_labels(self):
-        self.ax_spectrum.set_xlabel("Frequency, kHz")
-        self.ax_spectrum.set_ylabel("PSD, V2/Hz")
-        self.ax_spectrum.set_title("Power spectral density")
-        self.ax_spectrum.grid()
-
-        self.ax_const.set_xlabel("Real")
-        self.ax_const.set_ylabel("Imag")
-        self.ax_const.set_title("Constellation")
-        self.ax_const.grid()
-
-    def draw(self, plot_name, x, y, style='b.'):
-        if plot_name == 'const':
-            self.ax_const.clear()
-            self.ax_const.grid()
-            self.ax_const.plot(x, y, style)
-            self.fig_const_canvas.draw()
-
-        elif plot_name == 'spectrum':
-            self.ax_spectrum.clear()
-            self.ax_spectrum.grid()
-            self.ax_spectrum.plot(x, y, style)
-            self.fig_spectrum_canvas.draw()
-
     def set_state(self, event):
         if event == "Start":
             self.is_work = True
         elif event == "Stop":
             self.is_work = False
+
+
+class Axes:
+    def __init__(self, canvas_elem, xlabel='X', ylabel='Y', title='Title'):
+        self.canvas = canvas_elem.TKCanvas
+        self.fig = Figure()
+        self.ax = self.fig.add_subplot(111)
+        self.fig_canvas = _draw_figure(self.canvas, self.fig)
+        self.xlabel = xlabel
+        self.ylabel = ylabel
+        self.title = title
+        self.set_labels()
+
+    def draw(self, x, y, style='b.'):
+        self.ax.cla()
+        self.set_labels()
+        self.ax.plot(x, y, style)
+        self.fig_canvas.draw()
+
+    def set_labels(self):
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
+        self.ax.set_title(self.title)
+        self.ax.grid()
