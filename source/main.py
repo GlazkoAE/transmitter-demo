@@ -16,7 +16,7 @@ def main():
     filter_coefficients = [1, 2, 3, 4, 5, 4, 3, 2, 1]
     sps = 4
 
-    gui = GUI(resolution='FHD', location=(1920, 100), title='Matrix Wave - Transmit Demo')
+    gui = GUI(resolution='FHD', location=(0, 100), title='Matrix Wave - Transmit Demo')
     ax_const = Axes(gui.canvas_const_elem, xlabel='I samples', ylabel='Q samples', title='Constellation')
     ax_psd = Axes(gui.canvas_spectrum_elem, xlabel='Frequency, kHz', ylabel='PSD, V2/Hz',
                   title='Power spectral density')

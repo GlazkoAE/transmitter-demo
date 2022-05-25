@@ -1,4 +1,4 @@
-# transmitter-demo
+# Matrix Wave transmitter demo
 
 Installing the virtual environment and packages:
 ```
