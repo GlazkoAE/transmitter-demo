@@ -2,10 +2,10 @@
 
 Installing the virtual environment and packages:
 ```
-sudo bush install.sh
+sudo bash install.sh
 ```
 
 Run app:
 ```
-sudo bush run.sh
+sudo bash run.sh
 ```

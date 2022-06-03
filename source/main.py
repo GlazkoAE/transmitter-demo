@@ -10,10 +10,13 @@ from gui import GUI, Axes
 
 def main():
     # sudo chmod 666 /dev/ttyUSB0
-    baud_rate = 256000
-    block_length_in_bits = 2 ** 16
+    baud_rate = 115200
+    block_length_in_bits = 2 ** 12
+    welch_nperseg = 512
+    is_single_byte = False
     block_length_in_bytes = int(block_length_in_bits / 8)
-    filter_coefficients = [1, 2, 3, 4, 5, 4, 3, 2, 1]
+    filter_coefficients = [6, 3, -4, -10, -8, 2, 16, 23, 13, -13, -40, -47, -15, 57, 149, 226, 255, 226, 149, 57, -15,
+                           -47, -40, -13, 13, 23, 16, 2, -8, -10, -4, 3, 6]
     sps = 4
 
     gui = GUI(resolution='FHD', location=(0, 100), title='Matrix Wave - Transmit Demo')
@@ -31,10 +34,10 @@ def main():
 
             if gui.is_work:
                 # Transmit random data and wait for FPGA answer
-                rx_signal = uart.transmit_and_receive_data(ser, block_length_in_bytes)
+                rx_signal = uart.transmit_and_receive_data(ser, block_length_in_bytes, is_single_byte=is_single_byte)
 
                 # Calculate power spectral density of signal
-                frequency, psd = processing.psd(rx_signal, 1e6, nperseg=256)
+                frequency, psd = processing.psd(rx_signal, 1e6, nperseg=welch_nperseg)
 
                 # Parse signal to IQ signal
                 i_signal, q_signal = processing.parce_real_imag(rx_signal, sps)
