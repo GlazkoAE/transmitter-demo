@@ -43,9 +43,7 @@ def parce_real_imag(data: list[int], bytes_per_sample=1):
 
 
 def filter_signal(signal, coefficients, sps):
-    # not tested!!!
-    # check last or first value (mb in plot)
-    return upfirdn(coefficients, signal, up=1, down=sps)
+    return upfirdn(coefficients, signal[1:], up=1, down=sps)
 
 
 def psd(x, fs, nperseg=256):

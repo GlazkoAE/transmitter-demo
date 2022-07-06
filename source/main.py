@@ -16,7 +16,6 @@ def main():
     filter_coefficients = [6, 3, -4, -10, -8, 2, 16, 23, 13, -13, -40, -47, -15, 57, 149, 226, 255, 226, 149, 57, -15,
                            -47, -40, -13, 13, 23, 16, 2, -8, -10, -4, 3, 6]
     filter_power = sum(x ** 2 for x in filter_coefficients)
-    # filter_power_norm_coeff = filter_power ** 0.5
     zeros_head_and_tail = [0 for _ in filter_coefficients]
     sps = 4
 
@@ -52,8 +51,6 @@ def main():
                 # Update plots
                 ax_const.draw(x=i_samples, y=q_samples, style='ro')
                 ax_psd.draw(x=frequency, y=psd, style='b')
-                # ax_const.draw(x=range(len(i_samples)), y=i_samples, style='bo-')
-                # ax_psd.draw(x=range(len(i_signal)), y=i_signal, style='b-')
 
 
 if __name__ == '__main__':
