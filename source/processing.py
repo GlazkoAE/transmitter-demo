@@ -1,5 +1,6 @@
 from scipy.signal import upfirdn
 from scipy.signal import welch
+from math import log10
 
 
 def parse_bytes_reversed(sample, bytes_num):
@@ -29,16 +30,9 @@ def parse_samples(signal, bytes_num):
     return res
 
 
-def parce_real_imag(data: list[int], bytes_per_sample=1):
-    i_samples = []
-    q_samples = []
-    for sample_start_index in range(0, len(data), 2 * bytes_per_sample):
-        i_last = sample_start_index + bytes_per_sample
-        q_last = sample_start_index + bytes_per_sample * 2
-        i_sig = data[sample_start_index:i_last]
-        q_sig = data[i_last:q_last]
-        i_samples += parse_samples(i_sig, bytes_per_sample)
-        q_samples += parse_samples(q_sig, bytes_per_sample)
+def parce_real_imag(data):
+    i_samples = data[0:-1:2]
+    q_samples = data[1:-1:2]
     return i_samples, q_samples
 
 
@@ -46,6 +40,10 @@ def filter_signal(signal, coefficients, sps):
     return upfirdn(coefficients, signal[1:], up=1, down=sps)
 
 
-def psd(x, fs, nperseg=256):
-    f, pxx = welch(x, fs, nperseg=nperseg)
+def psd(real, imag, fs, nperseg=256):
+    sample = [x + y * 1j for x, y in zip(real, imag)]
+    f, pxx = welch(sample, fs, nperseg=nperseg, nfft=1024)
+    pxx = [10*log10(x) for x in pxx]
+    f = [*f[int(len(f)/2):], *f[:int(len(f)/2)]]
+    pxx = [*pxx[int(len(pxx)/2):], *pxx[:int(len(pxx)/2)]]
     return f, pxx
