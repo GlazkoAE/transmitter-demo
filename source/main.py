@@ -1,5 +1,6 @@
 import serial
 import PySimpleGUI as sg
+
 import uart
 import processing
 from gui import GUI, Axes
@@ -13,15 +14,16 @@ def main():
     bytes_per_sample = 2
     is_single_byte = False
     block_length_in_bytes = int(block_length_in_bits / 8)
-    filter_coefficients = [6, 3, -4, -10, -8, 2, 16, 23, 13, -13, -40, -47, -15, 57, 149, 226, 255, 226, 149, 57, -15,
+    filter_coefficients = [6, 3, -4, -10, -8, 2, 16, 23, 13, -13, -40, -47, -15, 57, 149, 226, 255, 226, 149, 57,
+                           -15,
                            -47, -40, -13, 13, 23, 16, 2, -8, -10, -4, 3, 6]
     filter_power = sum(x ** 2 for x in filter_coefficients)
     sps = 4
+    samples_to_show = 160
+    symbols_to_show = 40
 
     gui = GUI(resolution='FHD', location=(0, 100), title='Matrix Wave - Transmit Demo')
-    ax_const = Axes(gui.canvas_const_elem, xlabel='I samples', ylabel='Q samples', title='Constellation')
-    ax_psd = Axes(gui.canvas_spectrum_elem, xlabel='Frequency, kHz', ylabel='PSD, V2/Hz',
-                  title='Power spectral density')
+    axes = Axes(gui.canvas_elem)
 
     while True:
         # /dev/ttyUSB0 for unix/linux, COMx for windows (you should check number of COM by yourself)
@@ -52,8 +54,16 @@ def main():
                 q_samples = q_samples[9:-4]
 
                 # Update plots
-                ax_const.draw(x=i_samples, y=q_samples, style='ro')
-                ax_psd.draw(x=frequency, y=psd, style='b')
+                axes.draw(ax=axes.ax11, x=frequency, y=psd, style='b')
+                axes.draw(ax=axes.ax12, x=i_samples, y=q_samples, style='ro')
+                axes.draw(ax=axes.ax21, x=range(samples_to_show), y=i_signal[:samples_to_show], style='b',
+                          is_clear=False, )
+                axes.draw(ax=axes.ax21, x=range(samples_to_show), y=q_signal[:samples_to_show], style='r',
+                          is_clear=True)
+                axes.draw(ax=axes.ax22, x=range(symbols_to_show), y=i_samples[:symbols_to_show], style='b',
+                          is_clear=False)
+                axes.draw(ax=axes.ax22, x=range(symbols_to_show), y=q_samples[:symbols_to_show], style='r',
+                          is_clear=True)
 
 
 if __name__ == '__main__':
