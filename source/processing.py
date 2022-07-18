@@ -37,7 +37,7 @@ def parce_real_imag(data):
 
 
 def filter_signal(signal, coefficients, sps):
-    return upfirdn(coefficients, signal[1:], up=1, down=sps)
+    return upfirdn(coefficients, signal[0:], up=1, down=1)
 
 
 def psd(real, imag, fs, nperseg=256):
